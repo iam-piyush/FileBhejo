@@ -2,20 +2,75 @@ import React, { useState } from "react";
 import { UploadCloud } from "lucide-react";
 import Alert from "./Alert";
 import FilePreview from "./FilePreview";
+import { app } from "../firebase";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import ProgressBar from "./ProgressBar";
 
 export default function UploadFiles() {
-  const [file, setFile] = useState();
+  const [files, setFiles] = useState([]);
   const [errorMsg, setErrorMsg] = useState();
-  const onFileSelect = (file) => {
-    console.log(file);
-    if (file && file.size > 50000000) {
-      console.log("Size is greater than 50 MB");
-      setErrorMsg("Maximum Allowed File Size is 50 MB");
+  const [progress, setProgress] = useState();
+
+  const onFileSelect = (selectedFiles) => {
+    if (selectedFiles.length === 0) {
       return;
     }
+
+    const newFiles = [...files];
+    let totalSize = 0;
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+
+      if (file.size > 50000000) {
+        setErrorMsg("Maximum Allowed File Size is 50 MB");
+        return;
+      }
+
+      totalSize += file.size;
+
+      if (totalSize > 50000000) {
+        setErrorMsg("Total File Size exceeds 50 MB");
+        return;
+      }
+
+      newFiles.push(file);
+    }
+
     setErrorMsg(null);
-    setFile(file);
+    setFiles(newFiles);
   };
+
+  const isUploadButtonDisabled = files.length === 0;
+
+  const handleUpload = () => {
+    const storage = getStorage(app);
+
+    files.forEach((file) => {
+      const metadata = {
+        contentType: file.type,
+      };
+      const storageRef = ref(storage, `files/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
+      uploadTask.on("state_changed", (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log(`Upload for ${file.name} is ${progress}% done`);
+        setProgress(progress);
+        progress == 100 &&
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log("File available at", downloadURL);
+          });
+      });
+    });
+  };
+
   return (
     <div>
       <div className="col-span-full">
@@ -30,13 +85,13 @@ export default function UploadFiles() {
                 htmlFor="file-upload"
                 className="relative cursor-pointer rounded-md  font-semibold text-blue-600 hover:text-blue-500"
               >
-                <span>Upload a file</span>
+                <span>Upload files</span>
                 <input
                   id="file-upload"
                   name="file-upload"
                   type="file"
                   className="sr-only"
-                  onChange={(event) => onFileSelect(event.target.files[0])}
+                  onChange={(event) => onFileSelect(event.target.files)}
                   multiple
                 />
               </label>
@@ -45,9 +100,27 @@ export default function UploadFiles() {
           </div>
         </div>
       </div>
-      {file ? <FilePreview file={file} /> : null}
+
+      {files.map((file, index) => (
+        <FilePreview key={index} file={file} />
+      ))}
 
       {errorMsg ? <Alert msg={errorMsg} /> : null}
+
+      <div className="mt-4"></div>
+      {progress > 0 ? (
+        <ProgressBar progress={progress} />
+      ) : (
+        <button
+          onClick={handleUpload}
+          disabled={isUploadButtonDisabled}
+          className={`bg-blue-500 text-white px-4 py-2 rounded ${
+            isUploadButtonDisabled ? "cursor-not-allowed opacity-50" : ""
+          }`}
+        >
+          Upload
+        </button>
+      )}
     </div>
   );
 }
