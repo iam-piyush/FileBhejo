@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@yudiel/react-qr-scanner": "^1.2.6",
     "clipboard": "^2.0.11",
     "firebase": "^10.7.2",
     "jszip": "^3.10.1",

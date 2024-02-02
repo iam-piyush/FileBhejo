@@ -806,6 +806,11 @@ video {
   padding-bottom: 4rem;
 }
 
+.py-28 {
+  padding-top: 7rem;
+  padding-bottom: 7rem;
+}
+
 .pl-1 {
   padding-left: 0.25rem;
 }
