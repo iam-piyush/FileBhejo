@@ -21,7 +21,7 @@ export default function UploadFiles() {
   const [downloadURL, setDownloadURL] = useState("");
 
   const [timeRemaining, setTimeRemaining] = useState({
-    minutes: 3,
+    minutes: 5,
     seconds: 0,
   });
 
@@ -46,7 +46,7 @@ export default function UploadFiles() {
       setTimeout(() => {
         deleteFileFromStorage();
         setUploaded(false); // Set uploaded to false to trigger the cleanup in useEffect
-      }, 180000); // 3 minutes (180,000 milliseconds)
+      }, 300000); // 3 minutes (180,000 milliseconds)
     }
 
     return () => {
@@ -132,7 +132,7 @@ export default function UploadFiles() {
     if (uploaded) {
       timer = setTimeout(() => {
         deleteFileFromStorage();
-      }, 180000);
+      }, 300000);
     }
 
     return () => {
