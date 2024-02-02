@@ -158,11 +158,11 @@ export default function DownloadFiles() {
   };
 
   return (
-    <div className="w-5/12 max-[640px]:w-11/12">
+    <div className="w-5/12 max-[640px]:w-11/12 max-[640px]:mb-4">
       {!uploaded ? (
         <div className="drop col-span-full bg-orange-50">
           <div className="flex flex-col items-center justify-center bg-transparent rounded-lg border border-dashed border-orange-500 px-6 py-20 max-[640px]:mt-4">
-            <img src={File} alt="Upload File" style={{ width: "200px" }} />
+            <img src={File} alt="Upload File" style={{ height: "140px" }} />
             <div className="text-center">
               <UploadCloud
                 className="mx-auto h-12 w-12 text-orange-200"
@@ -216,11 +216,11 @@ export default function DownloadFiles() {
 
       {errorMsg ? <Alert msg={errorMsg} /> : null}
 
-      <div className="mt-4 flex justify-end">
+      <div className="mt-4 flex">
         <button
           onClick={handleUpload}
           disabled={isUploadButtonDisabled}
-          className={`bg-orange-600 text-white px-7 py-2 rounded hover:bg-orange-700 ${
+          className={`w-full bg-orange-600 text-white px-7 py-2 rounded hover:bg-orange-700 ${
             isUploadButtonDisabled ? "cursor-not-allowed opacity-50" : ""
           }`}
         >

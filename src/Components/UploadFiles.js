@@ -162,7 +162,7 @@ export default function UploadFiles() {
       {!uploaded ? (
         <div className="drop col-span-full bg-sky-50">
           <div className="flex flex-col items-center justify-center bg-transparent rounded-lg border border-dashed border-sky-500 px-6 py-20">
-            <img src={File} alt="Upload File" style={{ width: "200px" }} />
+            <img src={File} alt="Upload File" style={{ height: "140px" }} />
             <div className="text-center">
               <UploadCloud
                 className="mx-auto h-12 w-12 text-sky-200"
@@ -182,7 +182,6 @@ export default function UploadFiles() {
                     type="file"
                     className="sr-only"
                     onChange={(event) => onFileSelect(event.target.files)}
-                    multiple
                   />
                 </label>
               </div>
@@ -190,11 +189,11 @@ export default function UploadFiles() {
           </div>
         </div>
       ) : (
-        <div className="drop col-span-full">
-          <div className="mt-2 flex justify-center bg-transparent rounded-lg border border-dashed border-gray-900/25 py-12">
+        <div className="drop col-span-full bg-sky-50">
+          <div className="flex justify-center bg-transparent rounded-lg border border-dashed border-sky-500 py-20">
             <div className="text-center">
-              <QRCode value={downloadURL} size={128} className="mx-auto" />
-              <p className="mt-4 text-blue-600 font-semibold">
+              <QRCode value={downloadURL} size={128} className="mx-auto bg-sky-50" style={{ height: "200px" }} />
+              <p className="mt-4 text-sky-700 font-semibold">
                 <a href={downloadURL} target="_blank" rel="noopener noreferrer">
                   Download URL
                 </a>
@@ -216,11 +215,11 @@ export default function UploadFiles() {
 
       {errorMsg ? <Alert msg={errorMsg} /> : null}
 
-      <div className="mt-4 flex justify-end">
+      <div className="mt-4 flex">
         <button
           onClick={handleUpload}
           disabled={isUploadButtonDisabled}
-          className={`bg-sky-600 text-white px-7 py-2 rounded hover:bg-sky-700 ${
+          className={`w-full bg-sky-600 text-white px-7 py-2 rounded hover:bg-sky-700 ${
             isUploadButtonDisabled ? "cursor-not-allowed opacity-50" : ""
           }`}
         >

@@ -20,18 +20,17 @@ export default function ProgressBar({ progress = 10 }) {
             className="progress-ring__circle"
             strokeWidth={strokeWidth}
             fill="transparent"
-            stroke="#e0e0e0" // Set background color here
+            stroke="#e0e0e0" 
             r={radius - strokeWidth / 2}
             cx={radius}
             cy={radius}
           />
 
-          {/* Progress Circle */}
           <circle
             className="progress-ring__progress"
             strokeWidth={strokeWidth}
             fill="transparent"
-            stroke="#F97315" 
+            stroke="#0084C7" 
             r={radius - strokeWidth / 2}
             cx={radius}
             cy={radius}
@@ -56,12 +55,11 @@ export default function ProgressBar({ progress = 10 }) {
             height: "100%", 
           }}
         >
-          <CheckCircle size={30} color="#3C82F6" />
+          <CheckCircle size={30} color="#0084C7" />
         </div>
       )}
 
       {progress < 100 && (
-        // Text
         <div
           style={{
             position: "absolute",
