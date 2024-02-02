@@ -2,6 +2,7 @@ import React from "react";
 import Hero from "./Hero";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { DonotWorry } from "./DonotWorry";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
         <Header />
         <Hero />
       </div>
+      <DonotWorry />
       <Footer />
     </div>
   );

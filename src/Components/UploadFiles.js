@@ -27,9 +27,13 @@ export default function UploadFiles() {
 
   useEffect(() => {
     let timer;
-
+  
+    const handleBeforeUnload = () => {
+      deleteFileFromStorage();
+    };
+  
     if (uploaded) {
-      // Set a timer to update the countdown and delete the file after 3 minutes
+      // Set a timer to update the countdown and delete the file after 5 minutes
       timer = setInterval(() => {
         setTimeRemaining((prevTime) => {
           if (prevTime.seconds > 0) {
@@ -42,18 +46,23 @@ export default function UploadFiles() {
           }
         });
       }, 1000);
-
+  
       setTimeout(() => {
         deleteFileFromStorage();
         setUploaded(false); // Set uploaded to false to trigger the cleanup in useEffect
-      }, 300000); // 3 minutes (180,000 milliseconds)
+      }, 300000); // 5 minutes (300,000 milliseconds)
     }
-
+  
+    // Register the beforeunload event listener
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  
     return () => {
-      // Clear the timers when the component unmounts or when a new file is uploaded
+      // Clear the timers and remove the beforeunload event listener when the component unmounts or when a new file is uploaded
       clearInterval(timer);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [uploaded]);
+  
 
   const onFileSelect = (selectedFiles) => {
     if (selectedFiles.length === 0) {
