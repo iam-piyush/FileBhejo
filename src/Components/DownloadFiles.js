@@ -13,7 +13,7 @@ import {
 } from "firebase/storage";
 import QRCode from "react-qr-code";
 
-export default function UploadFiles() {
+export default function DownloadFiles() {
   const [files, setFiles] = useState([]);
   const [errorMsg, setErrorMsg] = useState();
   const [progressArray, setProgressArray] = useState([]);
@@ -160,12 +160,12 @@ export default function UploadFiles() {
   return (
     <div className="w-5/12 max-[640px]:w-11/12">
       {!uploaded ? (
-        <div className="drop col-span-full bg-sky-50">
-          <div className="flex flex-col items-center justify-center bg-transparent rounded-lg border border-dashed border-sky-500 px-6 py-20">
+        <div className="drop col-span-full bg-orange-50">
+          <div className="flex flex-col items-center justify-center bg-transparent rounded-lg border border-dashed border-orange-500 px-6 py-20 max-[640px]:mt-4">
             <img src={File} alt="Upload File" style={{ width: "200px" }} />
             <div className="text-center">
               <UploadCloud
-                className="mx-auto h-12 w-12 text-sky-200"
+                className="mx-auto h-12 w-12 text-orange-200"
                 aria-hidden="true"
               />
               <div className="flex flex-col items-center justify-center leading-6 text-gray-600">
@@ -173,7 +173,7 @@ export default function UploadFiles() {
                 <p className="text-md">files here to upload or</p>
                 <label
                   htmlFor="file-upload"
-                  className="px-8 py-2 mt-4 bg-sky-400 relative cursor-pointer rounded-md  text-white hover:bg-sky-500"
+                  className="px-8 py-2 mt-4 bg-orange-400 relative cursor-pointer rounded-md  text-white hover:bg-orange-500"
                 >
                   <span>Add files</span>
                   <input
@@ -220,7 +220,7 @@ export default function UploadFiles() {
         <button
           onClick={handleUpload}
           disabled={isUploadButtonDisabled}
-          className={`bg-sky-600 text-white px-7 py-2 rounded hover:bg-sky-700 ${
+          className={`bg-orange-600 text-white px-7 py-2 rounded hover:bg-orange-700 ${
             isUploadButtonDisabled ? "cursor-not-allowed opacity-50" : ""
           }`}
         >
