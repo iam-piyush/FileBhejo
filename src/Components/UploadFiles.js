@@ -4,7 +4,7 @@ import Alert from "./Alert";
 import FilePreview from "./FilePreview";
 import { app } from "../firebase";
 import {
-    deleteObject,
+  deleteObject,
   getDownloadURL,
   getStorage,
   ref,
@@ -19,7 +19,10 @@ export default function UploadFiles() {
   const [uploaded, setUploaded] = useState(false);
   const [downloadURL, setDownloadURL] = useState("");
 
-  const [timeRemaining, setTimeRemaining] = useState({ minutes: 3, seconds: 0 });
+  const [timeRemaining, setTimeRemaining] = useState({
+    minutes: 3,
+    seconds: 0,
+  });
 
   useEffect(() => {
     let timer;
@@ -86,14 +89,14 @@ export default function UploadFiles() {
 
   const handleUpload = () => {
     const storage = getStorage(app);
-  
+
     files.forEach((file, index) => {
       const metadata = {
         contentType: file.type,
       };
       const storageRef = ref(storage, `files/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-  
+
       uploadTask
         .then((snapshot) => {
           // Upload is complete, retrieve download URL
@@ -108,9 +111,10 @@ export default function UploadFiles() {
           console.error("Error during file upload:", error);
           setErrorMsg("Error during file upload");
         });
-  
+
       uploadTask.on("state_changed", (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log(`Upload for ${file.name} is ${progress}% done`);
         setProgressArray((prev) => {
           const newArray = [...prev];
@@ -151,7 +155,6 @@ export default function UploadFiles() {
         console.error("Error deleting file:", error);
       });
   };
-  
 
   return (
     <div>
@@ -213,15 +216,17 @@ export default function UploadFiles() {
 
       <div className="mt-4"></div>
 
-      <button
-        onClick={handleUpload}
-        disabled={isUploadButtonDisabled}
-        className={`bg-blue-500 text-white px-4 py-2 rounded ${
-          isUploadButtonDisabled ? "cursor-not-allowed opacity-50" : ""
-        }`}
-      >
-        Upload
-      </button>
+      {!uploaded ? (
+        <button
+          onClick={handleUpload}
+          disabled={isUploadButtonDisabled}
+          className={`bg-blue-500 text-white px-4 py-2 rounded ${
+            isUploadButtonDisabled ? "cursor-not-allowed opacity-50" : ""
+          }`}
+        >
+          Upload
+        </button>
+      ) : null}
     </div>
   );
 }
