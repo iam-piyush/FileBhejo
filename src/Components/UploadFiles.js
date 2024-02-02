@@ -201,7 +201,7 @@ export default function UploadFiles() {
         <div className="drop col-span-full bg-sky-50">
           <div className="flex justify-center bg-transparent rounded-lg border border-dashed border-sky-500 py-20">
             <div className="text-center">
-              <QRCode value={downloadURL} size={128} className="mx-auto bg-sky-50" style={{ height: "200px" }} />
+              <QRCode value={downloadURL} size={256} className="mx-auto bg-sky-50" style={{ height: "200px" }} />
               <p className="mt-4 text-sky-700 font-semibold">
                 <a href={downloadURL} target="_blank" rel="noopener noreferrer">
                   Download URL
