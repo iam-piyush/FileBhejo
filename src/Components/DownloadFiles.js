@@ -54,7 +54,7 @@ export default function DownloadFiles() {
 
     <div className="mt-4 flex">
       <button
-        className={`w-full bg-orange-600 text-white px-7 py-2 rounded hover:bg-orange-700`}
+        className={`w-full bg-orange-500 text-white px-7 py-2 rounded hover:bg-orange-600`}
         onClick={() => handleScanButtonClick()}
       >
         {showScanner ? "Close" : "Scan"}
