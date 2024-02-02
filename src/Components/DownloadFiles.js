@@ -21,6 +21,7 @@ export default function DownloadFiles() {
         width: 250,
         height: 250,
       },
+      fps: 30,
     });
 
     scanner.render(success, error);
