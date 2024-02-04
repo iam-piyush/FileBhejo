@@ -20,8 +20,8 @@ export default function UploadFiles() {
   const [uploaded, setUploaded] = useState(false);
   const [downloadURL, setDownloadURL] = useState("");
   const [timeRemaining, setTimeRemaining] = useState({
-    minutes: 0,
-    seconds: 15,
+    minutes: 5,
+    seconds: 0,
   });
 
   useEffect(() => {
@@ -51,7 +51,6 @@ export default function UploadFiles() {
       handleTimer();
     }
 
-    // Register the beforeunload event listener
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
@@ -59,6 +58,22 @@ export default function UploadFiles() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [uploaded]);
+
+  useEffect(() => {
+    const handlePageRefresh = (event) => {
+      if (uploaded || files.length > 0) {
+        const message = "Leaving this page will result in file deletion.";
+        event.returnValue = message;
+        return message;
+      }
+    };
+
+    window.addEventListener("beforeunload", handlePageRefresh);
+
+    return () => {
+      window.removeEventListener("beforeunload", handlePageRefresh);
+    };
+  }, [uploaded, files]);
 
   const onFileSelect = (selectedFiles) => {
     if (selectedFiles.length === 0) {
@@ -112,9 +127,9 @@ export default function UploadFiles() {
           setDownloadURL(url);
           setUploaded(true);
           setTimeRemaining({
-            minutes: 0,
-            seconds: 15,
-          }); // Reset the timer when a new file is uploaded
+            minutes: 5,
+            seconds: 0,
+          }); 
         })
         .catch((error) => {
           console.error("Error during file upload:", error);
@@ -216,15 +231,29 @@ export default function UploadFiles() {
       {errorMsg ? <Alert msg={errorMsg} /> : null}
 
       <div className="mt-4 flex">
-        <button
-          onClick={handleUpload}
-          disabled={isUploadButtonDisabled}
-          className={`w-full bg-sky-600 text-white px-7 py-2 rounded hover:bg-sky-700 ${
-            isUploadButtonDisabled ? "cursor-not-allowed opacity-50" : ""
-          }`}
-        >
-          Upload
-        </button>
+        {!uploaded ? (
+          <button
+            onClick={handleUpload}
+            disabled={isUploadButtonDisabled}
+            className={`w-full bg-sky-600 text-white px-7 py-2 rounded hover:bg-sky-700 ${
+              isUploadButtonDisabled ? "cursor-not-allowed opacity-50" : ""
+            }`}
+          >
+            Upload
+          </button>
+        ) : (
+          <button
+            onClick={() =>
+              alert(
+                "Please do not refresh the page; otherwise, the file will be deleted instantly."
+              )
+            }
+            className="w-full text-white px-7 py-2 rounded"
+            style={{ backgroundColor: "rgb(239 68 68)" }}
+          >
+            Please do not refresh the page
+          </button>
+        )}
       </div>
     </div>
   );
