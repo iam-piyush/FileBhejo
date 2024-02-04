@@ -27,7 +27,7 @@ export default function FileDownloader() {
     setShowScanner(false);
     
     if (result) {
-      window.open(result, '_blank');
+      window.open(result);
     }
   };
 
