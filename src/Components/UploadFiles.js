@@ -12,6 +12,11 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import QRCode from "react-qr-code";
+import {
+  getDatabase,
+  ref as dbRef,
+  set as setDB,
+} from "firebase/database";
 
 export default function UploadFiles() {
   const [files, setFiles] = useState([]);
@@ -20,16 +25,20 @@ export default function UploadFiles() {
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
   const [downloadURL, setDownloadURL] = useState("");
+  const [fileId, setFileId] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState({
     minutes: 5,
     seconds: 0,
   });
+  const [uploadButtonLabel, setUploadButtonLabel] = useState("Upload");
 
   useEffect(() => {
     let timer;
 
     const handleBeforeUnload = () => {
-      deleteFileFromStorage();
+      if (uploaded) {
+        deleteFileFromStorage();
+      }
     };
 
     const handleTimer = () => {
@@ -107,15 +116,11 @@ export default function UploadFiles() {
     setFiles(newFiles);
   };
 
-  const extractFilename = (url) => {
-    const matches = url.match(/files%2F([^?]+)/);
-    return matches && matches[1] ? matches[1] : '';
-  };
-
   const isUploadButtonDisabled = files.length === 0;
 
   const handleUpload = () => {
     const storage = getStorage(app);
+    const database = getDatabase(app);
 
     setUploading(true);
 
@@ -127,9 +132,7 @@ export default function UploadFiles() {
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
       uploadTask
-        .then((snapshot) => {
-          return getDownloadURL(snapshot.ref);
-        })
+        .then((snapshot) => getDownloadURL(snapshot.ref))
         .then((url) => {
           console.log(`File ${file.name} available at ${url}`);
           setDownloadURL(url);
@@ -138,10 +141,16 @@ export default function UploadFiles() {
             minutes: 5,
             seconds: 0,
           });
+
+          const fileId = Math.floor(1000 + Math.random() * 9000);
+          setFileId(fileId);
+
+          const rootRef = dbRef(database);
+          setDB(rootRef, { [fileId]: { fileName: file.name, url } });
         })
         .catch((error) => {
           console.error("Error during file upload:", error);
-          setErrorMsg("Error during file upload");
+          setErrorMsg(`Error uploading ${file.name}: ${error.message}`);
         });
 
       uploadTask.on("state_changed", (snapshot) => {
@@ -153,7 +162,17 @@ export default function UploadFiles() {
           return newArray;
         });
       });
+
+      // Reset the button label once the upload is complete
+      uploadTask.then(() => {
+        if (index === files.length - 1) {
+          setUploadButtonLabel("Upload");
+        }
+      });
     });
+
+    // Update the button label while uploading
+    setUploadButtonLabel("Uploading...");
   };
 
   const [copySuccess, setCopySuccess] = useState(false);
@@ -233,18 +252,24 @@ export default function UploadFiles() {
                 className="mx-auto bg-sky-50"
                 style={{ height: "200px" }}
               />
-              <p className="mt-2 font-medium text-gary-600">
+
+              <p className="mt-2 font-medium text-gray-600">
                 QR Code valid for:- {timeRemaining.minutes}:
                 {timeRemaining.seconds < 10
                   ? `0${timeRemaining.seconds}`
                   : timeRemaining.seconds}{" "}
               </p>
 
+              <p className="mt-1 font-medium text-gray-600">
+                File ID: {fileId}
+              </p>
               <button
                 onClick={handleCopyURL}
                 className="px-8 py-2 mt-2 bg-sky-400 relative cursor-pointer rounded-md  text-white hover:bg-sky-500"
               >
-                {!copySuccess ? "Copy Download URL" : "URL copied successfully!"}
+                {!copySuccess
+                  ? "Copy Download URL"
+                  : "URL copied successfully!"}
               </button>
             </div>
           </div>
@@ -266,7 +291,7 @@ export default function UploadFiles() {
               isUploadButtonDisabled ? "cursor-not-allowed opacity-50" : ""
             }`}
           >
-            {uploading ? "Uploading..." : "Upload"}
+            {uploadButtonLabel}
           </button>
         ) : (
           <button

@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { DownloadCloud } from "lucide-react";
+import { Form, Button, Table } from "react-bootstrap";
 import File from "../Assets/Upload.svg";
+import { app, database } from "../firebase";
+import { ref, onValue } from "firebase/database";
 
-export default function DownloadFiles() {
+export default function FileDownloader() {
   const [showScanner, setShowScanner] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
+  const [searchKey, setSearchKey] = useState("");
+  const [selectedData, setSelectedData] = useState(null);
 
   const handleDownload = () => {
     if (fileUrl) {
@@ -19,15 +24,38 @@ export default function DownloadFiles() {
 
   const handleScannerDecode = (result) => {
     setShowScanner(false);
-    setFileUrl(result);
+    setSearchKey(result);
   };
 
   const handleScannerError = (error) => {
     console.log(error?.message);
   };
 
+  const handleSearch = () => {
+    const dbRef = ref(database);
+
+    onValue(dbRef, (snapshot) => {
+      let records = [];
+      snapshot.forEach((childSnapshot) => {
+        let keyName = childSnapshot.key;
+        let data = childSnapshot.val();
+        records.push({ key: keyName, data: data });
+      });
+
+      const selected = records.find((record) => record.key === searchKey);
+
+      if (selected) {
+        setFileUrl(selected.data.url);
+        setSelectedData(selected);
+      } else {
+        setFileUrl("");
+        setSelectedData(null);
+      }
+    });
+  };
+
   return (
-    <div className="w-5/12 max-[640px]:w-11/12 max-[640px]:mt-4 max-[640px]:mb-8">
+    <div className="w-5/12 max-[640px]:w-11/12">
       {showScanner ? (
         <QrScanner
           onDecode={(result) => handleScannerDecode(result)}
@@ -35,33 +63,32 @@ export default function DownloadFiles() {
           style={{ width: "50px", height: "30px" }}
         />
       ) : (
-        <div className="download bg-orange-50 rounded-lg border border-dashed border-orange-500 px-6 py-28">
+        <div className="download bg-orange-50 rounded-lg border border-dashed border-orange-500 px-6 py-20 ">
           <div className="flex justify-center flex-col items-center">
             <div className="flex flex-col items-center justify-center">
-              <img src={File} alt="Upload File" style={{ height: "150px" }} />
+              <img src={File} alt="Upload File" style={{ height: "140px" }} />
               <DownloadCloud className="text-orange-400 w-12 h-12" />
-              <p>Scan the QR</p>
+              <p className="mt-4">Scan the QR Code or Enter the File ID</p>
               <p>to download the file.</p>
             </div>
           </div>
-        </div>
-      )}
-
-      {!showScanner && (
-        <div className="mt-4 flex">
-          <input
-            type="text"
-            placeholder="Paste file URL"
-            className="w-full border p-2 rounded mr-2"
-            value={fileUrl}
-            onChange={(e) => setFileUrl(e.target.value)}
-          />
-          <button
-            className={`bg-orange-500 text-white px-7 py-2 rounded hover:bg-orange-600`}
-            onClick={handleDownload}
-          >
-            Download
-          </button>
+          <Form className="mt-4 flex justify-center items-center">
+            <Form.Group controlId="searchKey">
+              <Form.Control
+                className="text-center py-2 bg-orange-200 rounded-l-md focus:outline-orange-500 placeholder-orange-500"
+                type="text"
+                placeholder="Enter File ID"
+                value={searchKey}
+                onChange={(e) => setSearchKey(e.target.value)}
+              />
+            </Form.Group>
+            <Button
+              onClick={fileUrl ? handleDownload : handleSearch}
+              className={`bg-orange-500 py-2 px-2 text-white rounded-r-md`}
+            >
+              {fileUrl ? "Download" : "Search"}
+            </Button>
+          </Form>
         </div>
       )}
 
