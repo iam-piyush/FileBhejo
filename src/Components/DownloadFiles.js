@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { DownloadCloud } from "lucide-react";
-import { Form, Button, Table } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import File from "../Assets/Upload.svg";
-import { app, database } from "../firebase";
+import { database } from "../firebase";
 import { ref, onValue } from "firebase/database";
 
 export default function FileDownloader() {
@@ -11,7 +11,7 @@ export default function FileDownloader() {
   const [fileUrl, setFileUrl] = useState("");
   const [searchKey, setSearchKey] = useState("");
   const [selectedData, setSelectedData] = useState(null);
-  const [loading, setLoading] = useState(false); // New state for loading
+  const [loading, setLoading] = useState(false); 
 
   const handleDownload = () => {
     if (fileUrl) {
@@ -25,7 +25,10 @@ export default function FileDownloader() {
 
   const handleScannerDecode = (result) => {
     setShowScanner(false);
-    setSearchKey(result);
+    
+    if (result) {
+      window.open(result, '_blank');
+    }
   };
 
   const handleScannerError = (error) => {
@@ -33,7 +36,7 @@ export default function FileDownloader() {
   };
 
   const handleSearch = () => {
-    setLoading(true); // Set loading to true when search starts
+    setLoading(true); 
 
     const dbRef = ref(database);
 
@@ -55,7 +58,7 @@ export default function FileDownloader() {
         setSelectedData(null);
       }
 
-      setLoading(false); // Set loading to false after search completes
+      setLoading(false); 
     });
   };
 
@@ -90,7 +93,7 @@ export default function FileDownloader() {
             <Button
               onClick={fileUrl ? handleDownload : handleSearch}
               className={`bg-orange-500 py-2 px-2 text-white rounded-r-md`}
-              disabled={loading} // Disable the button while loading
+              disabled={loading} 
             >
               {loading ? "Searching..." : fileUrl ? "Download" : "Search"}
             </Button>
