@@ -19,21 +19,19 @@ export default function UploadFiles() {
   const [progressArray, setProgressArray] = useState([]);
   const [uploaded, setUploaded] = useState(false);
   const [downloadURL, setDownloadURL] = useState("");
-
   const [timeRemaining, setTimeRemaining] = useState({
-    minutes: 5,
-    seconds: 0,
+    minutes: 0,
+    seconds: 15,
   });
 
   useEffect(() => {
     let timer;
-  
+
     const handleBeforeUnload = () => {
       deleteFileFromStorage();
     };
-  
-    if (uploaded) {
-      // Set a timer to update the countdown and delete the file after 5 minutes
+
+    const handleTimer = () => {
       timer = setInterval(() => {
         setTimeRemaining((prevTime) => {
           if (prevTime.seconds > 0) {
@@ -42,27 +40,25 @@ export default function UploadFiles() {
             return { minutes: prevTime.minutes - 1, seconds: 59 };
           } else {
             deleteFileFromStorage();
+            clearInterval(timer);
             return prevTime;
           }
         });
       }, 1000);
-  
-      setTimeout(() => {
-        deleteFileFromStorage();
-        setUploaded(false); // Set uploaded to false to trigger the cleanup in useEffect
-      }, 300000); // 5 minutes (300,000 milliseconds)
+    };
+
+    if (uploaded) {
+      handleTimer();
     }
-  
+
     // Register the beforeunload event listener
     window.addEventListener("beforeunload", handleBeforeUnload);
-  
+
     return () => {
-      // Clear the timers and remove the beforeunload event listener when the component unmounts or when a new file is uploaded
       clearInterval(timer);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [uploaded]);
-  
 
   const onFileSelect = (selectedFiles) => {
     if (selectedFiles.length === 0) {
@@ -88,7 +84,7 @@ export default function UploadFiles() {
       }
 
       newFiles.push(file);
-      setProgressArray((prev) => [...prev, 0]); // Initialize progress to 0 for each file
+      setProgressArray((prev) => [...prev, 0]);
     }
 
     setErrorMsg(null);
@@ -109,13 +105,16 @@ export default function UploadFiles() {
 
       uploadTask
         .then((snapshot) => {
-          // Upload is complete, retrieve download URL
           return getDownloadURL(snapshot.ref);
         })
         .then((url) => {
           console.log(`File ${file.name} available at ${url}`);
           setDownloadURL(url);
           setUploaded(true);
+          setTimeRemaining({
+            minutes: 0,
+            seconds: 15,
+          }); // Reset the timer when a new file is uploaded
         })
         .catch((error) => {
           console.error("Error during file upload:", error);
@@ -125,7 +124,6 @@ export default function UploadFiles() {
       uploadTask.on("state_changed", (snapshot) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(`Upload for ${file.name} is ${progress}% done`);
         setProgressArray((prev) => {
           const newArray = [...prev];
           newArray[index] = progress;
@@ -135,35 +133,23 @@ export default function UploadFiles() {
     });
   };
 
-  useEffect(() => {
-    let timer;
-
-    if (uploaded) {
-      timer = setTimeout(() => {
-        deleteFileFromStorage();
-      }, 300000);
-    }
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [uploaded]);
-
   const deleteFileFromStorage = () => {
-    const storage = getStorage(app);
-    const storageRef = ref(storage, `files/${files[0].name}`);
+    if (files.length > 0) {
+      const storage = getStorage(app);
+      const storageRef = ref(storage, `files/${files[0].name}`);
 
-    deleteObject(storageRef)
-      .then(() => {
-        console.log("File deleted successfully");
-        setDownloadURL("");
-        setUploaded(false);
-        setFiles([]);
-        setProgressArray([]);
-      })
-      .catch((error) => {
-        console.error("Error deleting file:", error);
-      });
+      deleteObject(storageRef)
+        .then(() => {
+          console.log("File deleted successfully");
+          setDownloadURL("");
+          setUploaded(false);
+          setFiles([]);
+          setProgressArray([]);
+        })
+        .catch((error) => {
+          console.error("Error deleting file:", error);
+        });
+    }
   };
 
   return (
@@ -201,7 +187,12 @@ export default function UploadFiles() {
         <div className="drop col-span-full bg-sky-50">
           <div className="flex justify-center bg-transparent rounded-lg border border-dashed border-sky-500 py-20">
             <div className="text-center">
-              <QRCode value={downloadURL} size={256} className="mx-auto bg-sky-50" style={{ height: "200px" }} />
+              <QRCode
+                value={downloadURL}
+                size={256}
+                className="mx-auto bg-sky-50"
+                style={{ height: "200px" }}
+              />
               <p className="mt-4 text-sky-700 font-semibold">
                 <a href={downloadURL} target="_blank" rel="noopener noreferrer">
                   Download URL

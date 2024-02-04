@@ -5,7 +5,6 @@ import File from "../Assets/Upload.svg";
 
 export default function DownloadFiles() {
   const [showScanner, setShowScanner] = useState(false);
-  const [scanResult, setScanResult] = useState(null);
 
   const handleDownload = (result) => {
     // Trigger download when the button is clicked
@@ -21,7 +20,6 @@ export default function DownloadFiles() {
 
   const handleScannerDecode = (result) => {
     // Handle the result when the QR code is successfully scanned
-    setScanResult(result);
     setShowScanner(false); // Hide the scanner after a successful scan
     handleDownload(result);
   };
