@@ -11,6 +11,7 @@ export default function FileDownloader() {
   const [fileUrl, setFileUrl] = useState("");
   const [searchKey, setSearchKey] = useState("");
   const [selectedData, setSelectedData] = useState(null);
+  const [loading, setLoading] = useState(false); // New state for loading
 
   const handleDownload = () => {
     if (fileUrl) {
@@ -32,6 +33,8 @@ export default function FileDownloader() {
   };
 
   const handleSearch = () => {
+    setLoading(true); // Set loading to true when search starts
+
     const dbRef = ref(database);
 
     onValue(dbRef, (snapshot) => {
@@ -51,11 +54,13 @@ export default function FileDownloader() {
         setFileUrl("");
         setSelectedData(null);
       }
+
+      setLoading(false); // Set loading to false after search completes
     });
   };
 
   return (
-    <div className="w-5/12 max-[640px]:w-11/12">
+    <div className="w-5/12 max-[640px]:w-11/12 max-[640px]:mt-4">
       {showScanner ? (
         <QrScanner
           onDecode={(result) => handleScannerDecode(result)}
@@ -68,7 +73,7 @@ export default function FileDownloader() {
             <div className="flex flex-col items-center justify-center">
               <img src={File} alt="Upload File" style={{ height: "140px" }} />
               <DownloadCloud className="text-orange-400 w-12 h-12" />
-              <p className="mt-4">Scan the QR Code or Enter the File ID</p>
+              <p className="mt-4 text-center">Scan the QR Code or Enter the File ID</p>
               <p>to download the file.</p>
             </div>
           </div>
@@ -85,8 +90,9 @@ export default function FileDownloader() {
             <Button
               onClick={fileUrl ? handleDownload : handleSearch}
               className={`bg-orange-500 py-2 px-2 text-white rounded-r-md`}
+              disabled={loading} // Disable the button while loading
             >
-              {fileUrl ? "Download" : "Search"}
+              {loading ? "Searching..." : fileUrl ? "Download" : "Search"}
             </Button>
           </Form>
         </div>

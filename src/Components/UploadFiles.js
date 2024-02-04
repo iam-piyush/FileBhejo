@@ -89,31 +89,19 @@ export default function UploadFiles() {
     if (selectedFiles.length === 0) {
       return;
     }
-
-    const newFiles = [...files];
-    let totalSize = 0;
-
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i];
-
-      if (file.size > 50000000) {
-        setErrorMsg("Maximum Allowed File Size is 50 MB");
-        return;
-      }
-
-      totalSize += file.size;
-
-      if (totalSize > 50000000) {
-        setErrorMsg("Total File Size exceeds 50 MB");
-        return;
-      }
-
-      newFiles.push(file);
-      setProgressArray((prev) => [...prev, 0]);
+  
+    const newFiles = [];
+    const file = selectedFiles[0]; 
+  
+    if (file.size > 50000000) {
+      setErrorMsg("Maximum Allowed File Size is 50 MB");
+      return;
     }
-
+  
     setErrorMsg(null);
+    newFiles.push(file);
     setFiles(newFiles);
+    setProgressArray([0]); 
   };
 
   const isUploadButtonDisabled = files.length === 0;
