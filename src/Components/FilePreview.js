@@ -5,7 +5,7 @@ import ProgressBar from "./ProgressBar";
 const FilePreview = ({ file, progress }) => {
   return (
     <div className="flex items-center justify-between mt-4">
-      <div className="flex items-center">
+      <div className="flex items-center text-sm xs:text-xs md:text-base">
         <img src={File} alt="file" className="mr-1" style={{ width: "30px" }} />
         <h2 className="mr-1">
           {file.name}  

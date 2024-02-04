@@ -17,6 +17,7 @@ export default function UploadFiles() {
   const [files, setFiles] = useState([]);
   const [errorMsg, setErrorMsg] = useState();
   const [progressArray, setProgressArray] = useState([]);
+  const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
   const [downloadURL, setDownloadURL] = useState("");
   const [timeRemaining, setTimeRemaining] = useState({
@@ -106,10 +107,17 @@ export default function UploadFiles() {
     setFiles(newFiles);
   };
 
+  const extractFilename = (url) => {
+    const matches = url.match(/files%2F([^?]+)/);
+    return matches && matches[1] ? matches[1] : '';
+  };
+
   const isUploadButtonDisabled = files.length === 0;
 
   const handleUpload = () => {
     const storage = getStorage(app);
+
+    setUploading(true);
 
     files.forEach((file, index) => {
       const metadata = {
@@ -129,7 +137,7 @@ export default function UploadFiles() {
           setTimeRemaining({
             minutes: 5,
             seconds: 0,
-          }); 
+          });
         })
         .catch((error) => {
           console.error("Error during file upload:", error);
@@ -146,6 +154,23 @@ export default function UploadFiles() {
         });
       });
     });
+  };
+
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleCopyURL = () => {
+    navigator.clipboard
+      .writeText(downloadURL)
+      .then(() => {
+        console.log("URL copied to clipboard");
+        setCopySuccess(true);
+        setTimeout(() => {
+          setCopySuccess(false);
+        }, 2000);
+      })
+      .catch((error) => {
+        console.error("Error copying to clipboard:", error);
+      });
   };
 
   const deleteFileFromStorage = () => {
@@ -208,17 +233,19 @@ export default function UploadFiles() {
                 className="mx-auto bg-sky-50"
                 style={{ height: "200px" }}
               />
-              <p className="mt-4 text-sky-700 font-semibold">
-                <a href={downloadURL} target="_blank" rel="noopener noreferrer">
-                  Download URL
-                </a>
-              </p>
-              <p className="mt-2 text-gray-500">
+              <p className="mt-2 font-medium text-gary-600">
                 QR Code valid for:- {timeRemaining.minutes}:
                 {timeRemaining.seconds < 10
                   ? `0${timeRemaining.seconds}`
                   : timeRemaining.seconds}{" "}
               </p>
+
+              <button
+                onClick={handleCopyURL}
+                className="px-8 py-2 mt-2 bg-sky-400 relative cursor-pointer rounded-md  text-white hover:bg-sky-500"
+              >
+                {!copySuccess ? "Copy Download URL" : "URL copied successfully!"}
+              </button>
             </div>
           </div>
         </div>
@@ -239,7 +266,7 @@ export default function UploadFiles() {
               isUploadButtonDisabled ? "cursor-not-allowed opacity-50" : ""
             }`}
           >
-            Upload
+            {uploading ? "Uploading..." : "Upload"}
           </button>
         ) : (
           <button
