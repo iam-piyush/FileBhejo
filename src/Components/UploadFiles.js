@@ -35,9 +35,13 @@ export default function UploadFiles() {
   useEffect(() => {
     let timer;
 
-    const handleBeforeUnload = () => {
+    const handleBeforeUnload = async () => {
       if (uploaded) {
-        deleteFileFromStorage();
+        try {
+          await deleteFileFromStorage();
+        } catch (error) {
+          console.error("Error during file deletion:", error);
+        }
       }
     };
 
@@ -180,7 +184,7 @@ export default function UploadFiles() {
       });
   };
 
-  const deleteFileFromStorage = () => {
+  const deleteFileFromStorage = async () => {
     if (files.length > 0) {
       const storage = getStorage(app);
       const storageRef = ref(storage, `files/${files[0].name}`);
