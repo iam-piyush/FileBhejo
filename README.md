@@ -1,70 +1,89 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# FileBhejo - Web Application
 
-## Available Scripts
+Welcome to FileBhejo, a user-friendly file sharing web application designed to simplify the process of sharing files, documents, or media. FileBhejo offers seamless sharing options via QR Code or a unique ID, ensuring quick and efficient file transfers for both personal and professional use.
 
-In the project directory, you can run:
 
-### `npm start`
+## Table of Contents
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Introduction
+- Features
+- Technologies Used
+- Installation
+- Usage
+- Screenshots
+- License
+- Acknowledgements
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+## Introduction
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+FileBhejo streamlines file sharing by providing intuitive methods such as QR Code sharing and unique ID sharing. It aims to enhance collaboration and productivity by offering a user-friendly interface and efficient file transfer capabilities.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **QR Code Sharing:** Instantly share files by generating a QR code for recipients to scan and access the content.
+- **Unique ID Sharing:** Share files securely using a unique ID, providing easy access to the shared content.
+- **Efficient File Transfer:** Swiftly transfer files without delays, ensuring seamless sharing of documents, media, and more.
+- **Cross-Platform Compatibility:** Access FileBhejo from any device or platform for convenient file sharing across different operating systems.
+- **User-Friendly Interface:** Enjoy a seamless experience with an intuitive interface, making file sharing effortless for both senders and recipients.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+## Tech Stack
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Client:**  ReactJS, TailwindCSS
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+**Database:** Firebase
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Installation
 
-## Learn More
+Follow these steps to set up the project locally :-
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+  git clone https://github.com/iam-piyush/FileBhejo.git
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  cd FileBhejo
+```
+    
+Install dependencies :-
 
-### Code Splitting
+```bash
+  npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Run the application :-
 
-### Analyzing the Bundle Size
+```bash
+  npm start
+```
+## Usage/Examples
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Visit http://localhost:3000/ in your web browser.
+- Upload files and choose to share them via QR code or unique ID.
+- Recipients can scan the QR code or enter the unique ID to access the shared files.
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
+## Screenshots
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Dashboard
+![App Screenshot](https://github.com/iam-piyush/FileBhejo/blob/master/Dashboard.png?raw=true)
 
-### Deployment
+- File Upload
+![App Screenshot](https://github.com/iam-piyush/FileBhejo/blob/master/File%20Upload.png?raw=true)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- File Download
+![App Screenshot](https://github.com/iam-piyush/FileBhejo/blob/master/File%20Download.png?raw=true)
 
-### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+
+## Acknowledgements
+
+I would like to thank [Ritika Bhatia](https://github.com/iam-ritikabhatia) for designing the user experience (UX) of FileBhejo. Her creative input and attention to detail have greatly contributed to making FileBhejo a user-friendly and intuitive application.
+
